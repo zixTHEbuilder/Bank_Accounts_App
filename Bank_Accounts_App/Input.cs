@@ -13,9 +13,26 @@ namespace Bank_Accounts_App
                 if (writeLine == true)
                     Console.WriteLine(message);
                 else
-                    Console.Write($"{message}");
+                    Console.Write($"{message} : ");
                 string UserInput = Console.ReadLine();
                 bool success = int.TryParse(UserInput, out int result);
+                if (success == true)
+                {
+                    return result;
+                }
+                Console.WriteLine("Invalid Input, Please enter a valid number");
+            }
+        }
+        public decimal ReadDecimal(string message, bool writeLine = false)
+        {
+            while (true)
+            {
+                if (writeLine == true)
+                    Console.WriteLine(message);
+                else
+                    Console.Write($"{message} : ");
+                string UserInput = Console.ReadLine();
+                bool success = decimal.TryParse(UserInput, out decimal result);
                 if (success == true)
                 {
                     return result;

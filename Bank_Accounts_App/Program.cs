@@ -1,4 +1,4 @@
-﻿using Bank_Account_App;
+﻿using Bank_Accounts_App;
 using System.Buffers;
 
 namespace Bank_Accounts_App
@@ -8,30 +8,42 @@ namespace Bank_Accounts_App
         static void Main()
         {
             Input input = new Input();
-            List<BankAccounts> bankAccounts = new List<BankAccounts>();
+            Bank bank = new Bank();
             while (true)
             {
                 Console.WriteLine("Visual Studio Bank");
-                int Program_Select = input.ReadInt("Select an Option : \n1. Create Bank Account \n2. Deposit \n3. Withdraw \n4. Check Balance \n5. Exit Program", writeLine: true);
+                double Program_Select = input.ReadInt("Select an Option : \n1. Create Bank Account \n2. Deposit \n3. Withdraw \n4. Check Balance \n5. Check Account Details \n6. Exit Program", writeLine: true);
                 switch (Program_Select)
                 {
                     case 1:
                         {
-                            string Owner = input.ReadString("Enter your Full Name");
-                            BankAccounts newAccount = new BankAccounts(Owner);
-                            bankAccounts.Add(newAccount);
-
-                            Console.WriteLine("Bank Account Created Successfully");
-                            foreach (BankAccounts accounts in bankAccounts)
-                            {
-                                Console.WriteLine(accounts);
-                                Console.WriteLine();
-                            }
+                            string owner = input.ReadString("Enter your Full Name");
+                            bank.CreateAccount(owner);
                             break;
                         }
                     case 2:
                         {
+                            bank.Deposit();
                             break;
+                        }
+                    case 3:
+                        {
+                            bank.Withdraw();
+                            break;
+                        }
+                    case 4:
+                        {
+                            bank.CheckBalance();
+                            break;
+                        }
+                    case 5:
+                        {
+                            bank.CheckDetails();
+                            break;
+                        }
+                    case 6:
+                        {
+                            return;
                         }
                     default:
                         Console.WriteLine("Error - Enter a valid number"); break;
