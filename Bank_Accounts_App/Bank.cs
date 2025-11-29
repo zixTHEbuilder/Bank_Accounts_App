@@ -8,9 +8,9 @@ namespace Bank_Accounts_App
     {
         Input input = new Input();
         List<BankAccounts> bankAccounts = new List<BankAccounts>();
-        public void CreateAccount(string Owner)
+        public void CreateAccount(string Owner, string password)
         {
-            BankAccounts newAccount = new BankAccounts(Owner);
+            BankAccounts newAccount = new BankAccounts(Owner, password);
             bankAccounts.Add(newAccount);
 
             Console.WriteLine("Bank Account Created Successfully");
@@ -74,9 +74,24 @@ namespace Bank_Accounts_App
             Console.WriteLine();
 
             int selectedAccount = input.ReadInt("Choose an account to procceed");
-            if (selectedAccount > 0 && selectedAccount < bankAccounts.Count)
+            if (selectedAccount > 0 && selectedAccount <= bankAccounts.Count)
             {
-                string password = input.ReadString("Enter your password");
+                var account = bankAccounts[selectedAccount - 1];
+                for (int i = 0; i < 3; i++)
+                {
+                    string passwordCheck = input.ReadString("Enter your password");
+                    if (passwordCheck == account.Password)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine(account);
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Password doesn't match");
+                    }
+                }
+                Console.WriteLine("Password Attempts Reached");
             }
         }
     }

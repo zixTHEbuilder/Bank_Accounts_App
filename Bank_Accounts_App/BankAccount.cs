@@ -12,11 +12,13 @@ namespace Bank_Accounts_App
         public string Owner { get; set; }
         public Guid AccountNumber { get; set; }
         public decimal Balance { get; private set; }        // when u change "set" to "private set" only the class can modifiy the balance, certain rules can be used to make sure the values are being set only after they comply with the rules.
-        public BankAccounts(string owner)
+        public string Password { get; set; }
+        public BankAccounts(string owner, string password)
         {
             Owner = owner;
             AccountNumber = Guid.NewGuid();
             Balance = 0;
+            Password = password;
         }
         public override string ToString()
         {
@@ -27,7 +29,7 @@ namespace Bank_Accounts_App
             if (amount <= 0)
                 return $"{amount}$ Cannot Be Deposited.";
             if (amount > 10000)
-                return "AML Deposit Limit Reached!";
+                return "AML ( Anti - Money Laundering ) Deposit Limit Reached!";
             Balance += amount;
             return $"{amount} Deposited Successfully";
         }

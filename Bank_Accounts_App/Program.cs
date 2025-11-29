@@ -1,5 +1,6 @@
 ﻿using Bank_Accounts_App;
 using System.Buffers;
+using System.ComponentModel;
 
 namespace Bank_Accounts_App
 {
@@ -18,7 +19,8 @@ namespace Bank_Accounts_App
                     case 1:
                         {
                             string owner = input.ReadString("Enter your Full Name");
-                            bank.CreateAccount(owner);
+                            string password = input.Password();
+                            bank.CreateAccount(owner,password);
                             break;
                         }
                     case 2:
