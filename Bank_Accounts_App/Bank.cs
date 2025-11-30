@@ -7,10 +7,17 @@ namespace Bank_Accounts_App
     class Bank
     {
         Input input = new Input();
-        List<BankAccounts> bankAccounts = new List<BankAccounts>();
+        List<BankAccount> bankAccounts = new List<BankAccount>();
         public void CreateAccount(string Owner, string password)
         {
-            BankAccounts newAccount = new BankAccounts(Owner, password);
+            BankAccount newAccount = new BankAccount(Owner, password);
+            bankAccounts.Add(newAccount);
+
+            Console.WriteLine("Bank Account Created Successfully");
+        }
+        public void CreateSavingsAccount(string Owner, string password, decimal InterestRate)
+        {
+            SavingsAccount newAccount = new SavingsAccount(Owner , password,InterestRate);
             bankAccounts.Add(newAccount);
 
             Console.WriteLine("Bank Account Created Successfully");
@@ -27,7 +34,8 @@ namespace Bank_Accounts_App
             if (selectedAccount > 0 && selectedAccount <= bankAccounts.Count)
             {
                 decimal amount = input.ReadDecimal("Enter the amount you want to deposit");
-                bankAccounts[selectedAccount - 1].Deposit(amount);     // u cannot change the values directly because the Balance setter is set to private so u use the .Deposit so that the function inside the class can change it since thats the only class that can change it when its set to private.
+                string resultMessage =bankAccounts[selectedAccount - 1].Deposit(amount);     // u cannot change the values directly because the Balance setter is set to private so u use the .Deposit so that the function inside the class can change it since thats the only class that can change it when its set to private.
+                Console.WriteLine(resultMessage);
                 return;
             }
             Console.WriteLine("Account doesn't exist, please enter a valid number to select the account");
@@ -44,7 +52,8 @@ namespace Bank_Accounts_App
             if (selectedAccount > 0 && selectedAccount <= bankAccounts.Count)
             {
                 decimal amount = input.ReadDecimal("Enter the amount you want to Withdraw");
-                bankAccounts[selectedAccount - 1].Withdraw(amount);
+                string resultMessage = bankAccounts[selectedAccount - 1].Withdraw(amount);  // u must use a variable when using this function since it returns a value which needs to be printed out, if u dont store it then u wont be able to show the user what the function returned.
+                Console.WriteLine(resultMessage);
                 return;
             }
             Console.WriteLine("Account doesn't exist, please enter a valid number to select the account");

@@ -7,7 +7,7 @@ namespace Bank_Accounts_App
 {
     class Input
     {
-        public int ReadInt(string message, bool writeLine = false)
+        public int ReadInt(string message, bool writeLine = false, bool NumLimit = false)
         {
             while (true)
             {
@@ -19,7 +19,16 @@ namespace Bank_Accounts_App
                 bool success = int.TryParse(UserInput, out int result);
                 if (success == true)
                 {
-                    return result;
+                    if (NumLimit == true)
+                    {
+                        if (result > 0 && result <= 100)
+                            return result;
+                        Console.WriteLine("Value Entered Must Be Between 1 - 100 ");
+                    }
+                    else
+                    {
+                        return result;  
+                    }
                 }
                 Console.WriteLine("Invalid Input, Please enter a valid number");
             }
@@ -47,33 +56,6 @@ namespace Bank_Accounts_App
             {
                 Console.Write($"{message} : ");
                 return Console.ReadLine();
-
-            }
-        }
-        public string Password()
-        {
-            Input input = new Input();
-            string password;
-            while (true)
-            {
-                password = input.ReadString("Enter a password containing 6-12 characters ");
-                string passwordConfirmation = input.ReadString("Confirm Password");
-                if (string.IsNullOrEmpty(password)&& string.IsNullOrEmpty(passwordConfirmation))
-                {
-                    Console.WriteLine("Password cannnot be empty");
-                    continue;
-                }
-                if (password.Length < 6 || password.Length > 12)
-                {
-                    Console.WriteLine("Password must 6-12 characters only");
-                    continue;
-                }
-                if (password != passwordConfirmation)
-                {
-                    Console.WriteLine("Passwords do not match");
-                    continue;
-                }
-                return password;
             }
         }
     }
