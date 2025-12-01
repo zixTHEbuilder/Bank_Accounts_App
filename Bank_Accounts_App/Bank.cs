@@ -51,9 +51,24 @@ namespace Bank_Accounts_App
             int selectedAccount = input.ReadInt("Select the bank account from which you want to withdraw money");
             if (selectedAccount > 0 && selectedAccount <= bankAccounts.Count)
             {
-                decimal amount = input.ReadDecimal("Enter the amount you want to Withdraw");
-                string resultMessage = bankAccounts[selectedAccount - 1].Withdraw(amount);  // u must use a variable when using this function since it returns a value which needs to be printed out, if u dont store it then u wont be able to show the user what the function returned.
-                Console.WriteLine(resultMessage);
+                var account = bankAccounts[selectedAccount - 1];
+                for (int i = 0; i < 3; i++)
+                {
+                    string passwordCheck = input.ReadString("Enter your password");
+                    if (passwordCheck == account.Password)
+                    {
+                        decimal amount = input.ReadDecimal("Enter the amount you want to Withdraw");
+                        string resultMessage = account.Withdraw(amount);  // u must use a variable (in this case its "resultMessage") when using this function since it returns a value which needs to be printed out, if u dont store it then u wont be able to show the user what the function returned.
+                        Console.WriteLine(resultMessage);
+                        return;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Password doesn't match");
+                        Console.WriteLine();
+                    }
+                }
+                Console.WriteLine("Password Attempts Reached");
                 return;
             }
             Console.WriteLine("Account doesn't exist, please enter a valid number to select the account");
@@ -82,7 +97,7 @@ namespace Bank_Accounts_App
             }
             Console.WriteLine();
 
-            int selectedAccount = input.ReadInt("Choose an account to procceed");
+            int selectedAccount = input.ReadInt("Choose an account to proceed");
             if (selectedAccount > 0 && selectedAccount <= bankAccounts.Count)
             {
                 var account = bankAccounts[selectedAccount - 1];
@@ -98,10 +113,13 @@ namespace Bank_Accounts_App
                     else
                     {
                         Console.WriteLine("Password doesn't match");
+                        Console.WriteLine();
                     }
                 }
                 Console.WriteLine("Password Attempts Reached");
+                return;
             }
+            Console.WriteLine("Account doesn't exist");
         }
     }
 }
