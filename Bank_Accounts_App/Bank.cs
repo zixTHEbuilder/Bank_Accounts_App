@@ -1,125 +1,96 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Security;
+using System.Security.Principal;
 using System.Text;
 
 namespace Bank_Accounts_App
 {
     class Bank
     {
-        Input input = new Input();
-        List<BankAccount> bankAccounts = new List<BankAccount>();
-        public void CreateAccount(string Owner, string password)
+        private readonly List<BankAccount> accounts = new List<BankAccount>();
+        private readonly Input input = new Input();
+        private readonly PasswordValidator password = new PasswordValidator();
+        public void CreateAccount()
         {
-            BankAccount newAccount = new BankAccount(Owner, password);
-            bankAccounts.Add(newAccount);
+            string owner = input.ReadString("Name");
+            string passwordCreate = password.CreatePassword();
+            int type = input.ReadInt("Enter Account Type :\n1. Current\n2. Savings", writeLine: true);
 
-            Console.WriteLine("Bank Account Created Successfully");
-        }
-        public void CreateSavingsAccount(string Owner, string password, decimal InterestRate)
-        {
-            SavingsAccount newAccount = new SavingsAccount(Owner , password,InterestRate);
-            bankAccounts.Add(newAccount);
+            if (type == 1)
+                accounts.Add(new BankAccount(owner, passwordCreate));
 
-            Console.WriteLine("Bank Account Created Successfully");
+            if (type == 2)
+            {
+                decimal interestRate = input.ReadDecimal("Enter Interest Rate %", NumLimit: true);
+                accounts.Add(new SavingsAccount(owner, passwordCreate, interestRate));
+            }
+            else
+                Console.WriteLine("Invalid Input");
         }
         public void Deposit()
         {
-            for (int i = 0; i < bankAccounts.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {bankAccounts[i].Owner}");
-            }
-            Console.WriteLine();
+            var ChosenAccount = selectAccount();
+            if (ChosenAccount == null) return;
 
-            int selectedAccount = input.ReadInt("Select the bank account in which you want to deposit money");
-            if (selectedAccount > 0 && selectedAccount <= bankAccounts.Count)
-            {
-                decimal amount = input.ReadDecimal("Enter the amount you want to deposit");
-                string resultMessage =bankAccounts[selectedAccount - 1].Deposit(amount);     // u cannot change the values directly because the Balance setter is set to private so u use the .Deposit so that the function inside the class can change it since thats the only class that can change it when its set to private.
-                Console.WriteLine(resultMessage);
-                return;
-            }
-            Console.WriteLine("Account doesn't exist, please enter a valid number to select the account");
+            decimal amount = input.ReadDecimal("Enter amount to deposit");
+            Console.WriteLine(ChosenAccount.Deposit(amount));
         }
         public void Withdraw()
         {
-            for (int i = 0; i < bankAccounts.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {bankAccounts[i].Owner}");
-            }
-            Console.WriteLine();
+            var ChosenAccount = selectAccount();
+            if (ChosenAccount == null) return;
+            if (!validatePassword(ChosenAccount)) return;
 
-            int selectedAccount = input.ReadInt("Select the bank account from which you want to withdraw money");
-            if (selectedAccount > 0 && selectedAccount <= bankAccounts.Count)
-            {
-                var account = bankAccounts[selectedAccount - 1];
-                for (int i = 0; i < 3; i++)
-                {
-                    string passwordCheck = input.ReadString("Enter your password");
-                    if (passwordCheck == account.Password)
-                    {
-                        decimal amount = input.ReadDecimal("Enter the amount you want to Withdraw");
-                        string resultMessage = account.Withdraw(amount);  // u must use a variable (in this case its "resultMessage") when using this function since it returns a value which needs to be printed out, if u dont store it then u wont be able to show the user what the function returned.
-                        Console.WriteLine(resultMessage);
-                        return;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Password doesn't match");
-                        Console.WriteLine();
-                    }
-                }
-                Console.WriteLine("Password Attempts Reached");
-                return;
-            }
-            Console.WriteLine("Account doesn't exist, please enter a valid number to select the account");
+            decimal amount = input.ReadDecimal("Enter amount to withdraw");
+            Console.WriteLine(ChosenAccount.Withdraw(amount));
+
         }
         public void CheckBalance()
         {
-            for (int i = 0; i < bankAccounts.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {bankAccounts[i].Owner}");
-            }
-            Console.WriteLine();
+            var ChosenAccount = selectAccount();
+            if (ChosenAccount == null) return;
+            Console.WriteLine(ChosenAccount.Balance);
 
-            int selectedAccount = input.ReadInt("Select the account whose balance you want to check");
-            if (selectedAccount > 0 && selectedAccount <= bankAccounts.Count)
-            {
-                Console.WriteLine($"Balance : {bankAccounts[selectedAccount - 1].Balance}");
-                return;
-            }
-            Console.WriteLine("Account doesn't exist, please enter a valid number to select the account");
         }
         public void CheckDetails()
         {
-            for (int i = 0; i < bankAccounts.Count; i++)
-            {
-                Console.WriteLine($"{i+1}. {bankAccounts[i].Owner}");
-            }
-            Console.WriteLine();
+            var ChosenAccount = selectAccount();
+            if (ChosenAccount == null) return;
+            if (!validatePassword(ChosenAccount)) return; // if validate password return true, it'll move on to next otherwise it'll return
 
-            int selectedAccount = input.ReadInt("Choose an account to proceed");
-            if (selectedAccount > 0 && selectedAccount <= bankAccounts.Count)
+            Console.WriteLine(ChosenAccount);
+        }
+        private BankAccount selectAccount()
+        {
+            if (accounts.Count == 0)
             {
-                var account = bankAccounts[selectedAccount - 1];
-                for (int i = 0; i < 3; i++)
-                {
-                    string passwordCheck = input.ReadString("Enter your password");
-                    if (passwordCheck == account.Password)
-                    {
-                        Console.WriteLine();
-                        Console.WriteLine(account);
-                        return;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Password doesn't match");
-                        Console.WriteLine();
-                    }
-                }
-                Console.WriteLine("Password Attempts Reached");
-                return;
+                Console.WriteLine("No accounts found"); return null;
             }
-            Console.WriteLine("Account doesn't exist");
+            for (int i = 0; i < accounts.Count; i++)
+                Console.WriteLine($"{i + 1}. {accounts[i].Owner}");
+
+            int AccountSelect = input.ReadInt("Choose an account");
+
+            if (AccountSelect < 0 && AccountSelect < accounts.Count)
+            {
+                Console.WriteLine("Invalid Account");
+                return null;
+            }
+            return accounts[AccountSelect - 1];
+        }
+        private bool validatePassword(BankAccount Account)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                string passwordCheck = input.ReadString("Enter your password");
+                if (passwordCheck == Account.Password)
+                    return true;
+
+                Console.WriteLine("Invalid Password");
+            }
+            Console.WriteLine("Maximum attempts reached!");
+            return false;
         }
     }
 }

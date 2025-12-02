@@ -6,7 +6,7 @@ namespace Bank_Accounts_App
 {
     class PasswordValidator
     {
-        public string Password()
+        public string CreatePassword()
         {
             Input input = new Input();
             string password;

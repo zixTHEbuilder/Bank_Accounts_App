@@ -10,7 +10,6 @@ namespace Bank_Accounts_App
         {
             Input input = new Input();
             Bank bank = new Bank();
-            PasswordValidator passwordCreator = new PasswordValidator();
 
             Console.WriteLine("Visual Studio Bank");
             while (true)
@@ -20,16 +19,7 @@ namespace Bank_Accounts_App
                 {
                     case 1:
                         {
-                            string owner = input.ReadString("Enter your Full Name");
-                            string password = passwordCreator.Password();
-                            int AccountType = input.ReadInt("Enter account type : \n1. Current Account \n2. Saving Account", writeLine : true);
-                            if (AccountType == 1)
-                                bank.CreateAccount(owner,password);
-                            if (AccountType == 2)
-                            {
-                                int interestRate = input.ReadInt("Enter the Interest Rate % you want on this account", NumLimit: true);
-                                bank.CreateSavingsAccount(owner,password, interestRate);
-                            }
+                            bank.CreateAccount();
                             break;
                         }
                     case 2:

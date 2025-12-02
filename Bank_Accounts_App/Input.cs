@@ -33,7 +33,7 @@ namespace Bank_Accounts_App
                 Console.WriteLine("Invalid Input, Please enter a valid number");
             }
         }
-        public decimal ReadDecimal(string message, bool writeLine = false)
+        public decimal ReadDecimal(string message, bool writeLine = false, bool NumLimit = false)
         {
             while (true)
             {
@@ -41,11 +41,21 @@ namespace Bank_Accounts_App
                     Console.WriteLine(message);
                 else
                     Console.Write($"{message} : ");
+
                 string UserInput = Console.ReadLine();
                 bool success = decimal.TryParse(UserInput, out decimal result);
                 if (success == true)
                 {
-                    return result;
+                    if (NumLimit == true)
+                    {
+                        if (result > 0 && result <= 100)
+                            return result;
+                        Console.WriteLine("Value Entered Must Be Between 1 - 100 ");
+                    }
+                    else
+                    {
+                        return result;
+                    }
                 }
                 Console.WriteLine("Invalid Input, Please enter a valid number");
             }

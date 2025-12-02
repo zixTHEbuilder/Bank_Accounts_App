@@ -19,7 +19,7 @@ namespace Bank_Accounts_App
                 return "AML ( Anti - Money Laundering ) Deposit Limit Reached!";
             decimal interestAmount = (InterestRate / 100) * amount;     // this is the formula for calculating interest amount when depositing using Polymorphism.
             Balance += amount + (interestAmount);       // remember to add the "+(interest amount) so that the interest amount gets added when depositing.
-            return $"{amount}$ Deposited Successfully";
+            return $"{amount}$ Deposited with interest";
         }
         public override string ToString()
         {
